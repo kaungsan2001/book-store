@@ -1,4 +1,4 @@
-import type {  Response } from "express";
+import type { Response } from "express";
 import { sendResponse } from "../../utils/response";
 import { CACHE_KEYS, ERRORS } from "../../config/constants";
 import {
@@ -86,18 +86,18 @@ export const getArticle = async (
   const articleId = req.validated!.params.id;
   const cache = await getCache(`${CACHE_KEYS.ARTICLES}${articleId}`);
 
-  if (cache) {
-    return sendResponse({ res, data: { article: cache }, message: "Article" });
-  }
+  // if (cache) {
+  //   return sendResponse({ res, data: { article: cache }, message: "Article" });
+  // }
   const article = await getArticleByIdService(articleId);
 
-  await setCache({
-    key: `${CACHE_KEYS.ARTICLES}${articleId}`,
-    exp: 3600,
-    data: article,
-  });
+  // await setCache({
+  //   key: `${CACHE_KEYS.ARTICLES}${articleId}`,
+  //   exp: 3600,
+  //   data: article,
+  // });
 
-  sendResponse({ res, data: { article }, message: "Article" });
+  sendResponse({ res, data: article, message: "Article" });
 };
 
 /**********************************************
@@ -108,24 +108,26 @@ export const getAllArticle = async (
   res: Response,
 ) => {
   const { cursor, limit } = req.validated!.query;
-  
 
-  const cache = await getCache(`${CACHE_KEYS.ARTICLES}${limit}${cursor}`);
+  // const cache = await getCache(`${CACHE_KEYS.ARTICLES}${limit}${cursor}`);
 
-  if (cache) {
-    return sendResponse({
-      res,
-      message: "Articles List",
-      data: cache.articles,
-      meta: cache.meta,
-    });
-  }
-  const { totalCount, articles } = await getAllArticleService({ limit, cursor });
+  // if (cache) {
+  //   return sendResponse({
+  //     res,
+  //     message: "Articles List",
+  //     data: cache.articles,
+  //     meta: cache.meta,
+  //   });
+  // }
+  const { totalCount, articles } = await getAllArticleService({
+    limit,
+    cursor,
+  });
 
   const hasNextPage = articles.length > limit;
   const nextCursor = hasNextPage ? articles[articles.length - 1]?.id : null;
 
-  if(hasNextPage) {
+  if (hasNextPage) {
     articles.pop(); // Remove the extra article used to check for next page
   }
 
@@ -134,7 +136,7 @@ export const getAllArticle = async (
     hasNextPage,
     nextCursor,
   };
- 
+
   await setCache({
     key: `${CACHE_KEYS.ARTICLES}${limit}${cursor}`,
     exp: 3600,

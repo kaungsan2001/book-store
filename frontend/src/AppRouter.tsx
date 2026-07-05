@@ -50,7 +50,7 @@ let router = createBrowserRouter([
         path: "articles",
         children: [
           { index: true, Component: ArticleListPage },
-          { path: "detail/:id", Component: ArticleDetailPage },
+          { path: ":id", Component: ArticleDetailPage },
         ],
       },
     ],

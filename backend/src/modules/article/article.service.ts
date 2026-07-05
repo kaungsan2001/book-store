@@ -64,7 +64,7 @@ export const createArticleService = async (
  * GET AN ARTICLE BY ID SERVICE *
  ********************************/
 export const getArticleByIdService = async (id: string): Promise<Article> => {
-  const article = await prisma.article.findUnique({
+  const article = await prisma.article.findFirst({
     where: { id },
     include: {
       author: {

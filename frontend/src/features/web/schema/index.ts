@@ -4,8 +4,8 @@ export type Article = {
   content: string;
   imageUrl: string;
   imageId: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   author: {
     name: string;
   };

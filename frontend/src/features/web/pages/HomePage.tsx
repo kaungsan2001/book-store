@@ -2,6 +2,7 @@ import { ArrowRight, BookOpen, Truck, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { articlesQuery } from "@/features/web/api";
+import ArticleCard from "@/features/articles/components/article-card";
 export default function HomePage() {
   const { data: articles } = useSuspenseQuery(articlesQuery("?limit=6"));
   return (
@@ -196,19 +197,7 @@ export default function HomePage() {
         </h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6 ">
           {articles?.data.map((article) => (
-            <div key={article.id} className="p-4 border-b border-zinc-850">
-              <img
-                src={article.imageUrl}
-                alt={article.title}
-                className="w-full h-50 rounded-lg object-cover"
-              />
-              <h2 className="text-lg font-semibold text-primary">
-                {article.title}
-              </h2>
-              <p className="text-sm text-zinc-500 mt-1">
-                {article.content.substring(0, 100)}...
-              </p>
-            </div>
+            <ArticleCard article={article} />
           ))}
         </div>
         <Button className="mt-4 w-full">View All</Button>
