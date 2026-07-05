@@ -72,8 +72,8 @@ export type GetArticleByIdInput = z.infer<
  ********************************/
 export const GetAtricleListSchema = z.object({
   query: z.object({
-    page: z.coerce.number().positive().catch(1), //safely falls back to 1 if missing, empty, or invalid.
-    limit: z.coerce.number().positive().catch(10),
+    cursor: z.cuid2().optional(), 
+    limit: z.coerce.number().int().positive().catch(10), //safely falls back to 10 if missing, empty, or invalid.
   }),
 });
 

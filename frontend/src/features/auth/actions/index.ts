@@ -1,4 +1,4 @@
-import { api } from "@/api/axios";
+import { authApi } from "@/api/axios";
 import { AxiosError } from "axios";
 import { redirect, type ActionFunctionArgs } from "react-router";
 import useAuthStore from "../store";
@@ -11,7 +11,7 @@ export const signInAction = async ({ request }: ActionFunctionArgs) => {
   };
 
   try {
-    const res = await api.post("/auth/sign-in", data);
+    const res = await authApi.post("/auth/sign-in", data);
 
     if (res.status !== 200) {
       return res.data;
@@ -34,7 +34,7 @@ export const signUpAction = async ({ request }: ActionFunctionArgs) => {
   };
 
   try {
-    const res = await api.post("/auth/sign-up", data);
+    const res = await authApi.post("/auth/sign-up", data);
 
     if (res.status !== 200) {
       return res.data;
@@ -62,7 +62,7 @@ export const verifyOtpAction = async ({ request }: ActionFunctionArgs) => {
 
   console.log(data);
   try {
-    const res = await api.post("/auth/verify-otp", data);
+    const res = await authApi.post("/auth/verify-otp", data);
     if (res.status !== 200) {
       return res.data;
     }
@@ -91,7 +91,7 @@ export const setPasswordAction = async ({ request }: ActionFunctionArgs) => {
   };
 
   try {
-    const res = await api.post("/auth/confirm-password", data);
+    const res = await authApi.post("/auth/confirm-password", data);
     if (res.status !== 200) {
       return res.data;
     }
@@ -108,7 +108,7 @@ export const setPasswordAction = async ({ request }: ActionFunctionArgs) => {
 
 export const logoutAction = async () => {
   try {
-    await api.post("/auth/logout");
+    await authApi.post("/auth/logout");
     return redirect("/auth/sign-in");
   } catch (error) {
     console.log(error);

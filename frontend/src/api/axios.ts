@@ -1,7 +1,7 @@
 import axios from "axios";
 import type { AxiosResponse, InternalAxiosRequestConfig } from "axios";
 
-export const api = axios.create({
+export const authApi = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
   withCredentials: true,
   headers: {
@@ -14,7 +14,7 @@ interface WaitingRequest {
   reject: (value?: unknown) => void;
 }
 
-export const authApi = axios.create({
+export const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
   withCredentials: true,
   headers: {
@@ -48,7 +48,7 @@ const retryWaitingRequests = (error?: unknown) => {
   waitingRequests = [];
 };
 
-authApi.interceptors.response.use(
+api.interceptors.response.use(
   (response: AxiosResponse) => response,
   async (error: unknown) => {
     if (!axios.isAxiosError(error)) return Promise.reject(error);

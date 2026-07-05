@@ -2,7 +2,6 @@ import "dotenv/config";
 import express from "express";
 import type { Request, Response, NextFunction } from "express";
 import cors from "cors";
-
 import i18next from "i18next";
 import Backend from "i18next-fs-backend";
 import * as middleware from "i18next-http-middleware";
@@ -11,6 +10,7 @@ import cookieParser from "cookie-parser";
 import routes from "./routes";
 import { ERRORS } from "../config/constants";
 import createHttpError from "http-errors";
+import morgan from "morgan";
 
 const app = express();
 
@@ -57,6 +57,7 @@ const corsOptions: cors.CorsOptions = {
 };
 
 app
+  .use(morgan("dev"))
   .use(cors(corsOptions))
   .use(cookieParser())
   .use(express.json())

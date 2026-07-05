@@ -1,11 +1,11 @@
-import { api } from "@/api/axios";
+import { authApi } from "@/api/axios";
 import { redirect } from "react-router";
 import useAuthStore from "../store";
 import { Paths } from "@/config/constants";
 
 export const authCheckLoader = async () => {
   try {
-    const res = await api.get("/auth/check");
+    const res = await authApi.get("/auth/check");
     if (res.status !== 200) {
       return null;
     }

@@ -1,4 +1,4 @@
-import type { Request, Response } from "express";
+import type {  Response } from "express";
 import { sendResponse } from "../../utils/response";
 import { CACHE_KEYS, ERRORS } from "../../config/constants";
 import {
@@ -107,10 +107,10 @@ export const getAllArticle = async (
   req: ValidatedRequest<typeof GetAtricleListSchema>,
   res: Response,
 ) => {
-  const { page, limit } = req.validated!.query;
-  const skip = (page - 1) * limit;
+  const { cursor, limit } = req.validated!.query;
+  
 
-  const cache = await getCache(`${CACHE_KEYS.ARTICLES}${limit}${skip}`);
+  const cache = await getCache(`${CACHE_KEYS.ARTICLES}${limit}${cursor}`);
 
   if (cache) {
     return sendResponse({
@@ -120,27 +120,23 @@ export const getAllArticle = async (
       meta: cache.meta,
     });
   }
-  const { totalCount, articles } = await getAllArticleService({ limit, skip });
+  const { totalCount, articles } = await getAllArticleService({ limit, cursor });
 
   const hasNextPage = articles.length > limit;
-  const nextPage = hasNextPage ? page + 1 : null;
-  const previousPage = page !== 1 ? page - 1 : null;
-  const totalPage = Math.ceil(totalCount / limit); // Math.ceil() -> to avoid decimal numbers
+  const nextCursor = hasNextPage ? articles[articles.length - 1]?.id : null;
 
-  if (hasNextPage) {
-    articles.pop();
+  if(hasNextPage) {
+    articles.pop(); // Remove the extra article used to check for next page
   }
 
   const meta = {
+    totalCount,
     hasNextPage,
-    nextPage,
-    previousPage,
-    currentPage: page,
-    totalPage,
+    nextCursor,
   };
-
+ 
   await setCache({
-    key: `${CACHE_KEYS.ARTICLES}${limit}${skip}`,
+    key: `${CACHE_KEYS.ARTICLES}${limit}${cursor}`,
     exp: 3600,
     data: { articles, meta },
   });

@@ -12,7 +12,7 @@ import ProductListPage from "./features/product/pages/ProductListPage";
 import ProductDetailPage from "./features/product/pages/ProductDetailPage";
 import CheckOutPage from "./features/product/pages/CheckOutPage";
 //layouts
-import RootLayout, { loader } from "./layouts/RootLayout";
+import RootLayout from "./layouts/RootLayout";
 import GuestLayout from "./layouts/GuestLayout";
 import {
   logoutAction,
@@ -26,25 +26,33 @@ import {
   otpLoader,
   setPasswordLoader,
 } from "./features/auth/loader";
+import ArticleListPage from "./features/articles/pages/ArticleListPage";
+import ArticleDetailPage from "./features/articles/pages/ArticleDetailPage";
+import { homeLoader } from "./features/web/loader";
 
 let router = createBrowserRouter([
   {
     path: "/",
     Component: RootLayout,
-    loader: loader,
     ErrorBoundary: NotFoundPage,
     children: [
-      { index: true, Component: HomePage },
+      { index: true, Component: HomePage, loader: homeLoader },
       { path: "contact", Component: ContactPage },
-    ],
-  },
-  {
-    path: "/products",
-    Component: RootLayout,
-    children: [
-      { index: true, Component: ProductListPage },
-      { path: "detail/:id", Component: ProductDetailPage },
-      { path: "checkout", Component: CheckOutPage },
+      {
+        path: "products",
+        children: [
+          { index: true, Component: ProductListPage },
+          { path: "detail/:id", Component: ProductDetailPage },
+          { path: "checkout", Component: CheckOutPage },
+        ],
+      },
+      {
+        path: "articles",
+        children: [
+          { index: true, Component: ArticleListPage },
+          { path: "detail/:id", Component: ArticleDetailPage },
+        ],
+      },
     ],
   },
   {

@@ -98,20 +98,23 @@ export const getArticleByIdService = async (id: string): Promise<Article> => {
  **********************************/
 export const getAllArticleService = async ({
   limit,
-  skip,
+  cursor,
 }: {
   limit: number;
-  skip: number;
+  cursor?: string;
 }) => {
   const [totalCount, articles] = await Promise.all([
     prisma.article.count(),
     prisma.article.findMany({
       take: limit + 1,
-      skip,
+      skip: cursor ? 1 : 0, // Skip the cursor if it exists
+      cursor: cursor ? { id: cursor } : undefined, // Set the cursor if it exists
       select: {
         id: true,
         title: true,
         content: true,
+        imageUrl: true,
+        imageId: true,
         createdAt: true,
         updatedAt: true,
         author: {
