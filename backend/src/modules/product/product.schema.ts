@@ -7,6 +7,14 @@ export const GetOneSchema = z.object({
 });
 export type GetOneType = z.infer<typeof GetOneSchema>["params"];
 
+export const GetProductListSchema = z.object({
+  query: z.object({
+    cursor: z.cuid2().optional(),
+    limit: z.coerce.number().int().positive().catch(10), //safely falls back to 10 if missing, empty, or invalid.
+  }),
+});
+export type GetProductListType = z.infer<typeof GetProductListSchema>["query"];
+
 /*******************************
  * CREATE PRODUCT INPUT SCHEMA *
  *******************************/
@@ -18,6 +26,11 @@ export const CreateProductSchema = z.object({
         error: "Product name must be text",
       })
       .min(1, "Product name cannot be empty"),
+    author: z
+      .string({
+        error: "Author name must be text",
+      })
+      .min(1, "Author name cannot be empty"),
 
     description: z
       .string({

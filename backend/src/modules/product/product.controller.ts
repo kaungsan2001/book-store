@@ -4,9 +4,11 @@ import {
   createProduct,
   deleteProductById,
   getProductById,
+  getProductList,
 } from "./product.service";
 import type { ValidatedRequest } from "../../middlewares/validate.middleware";
 import type {
+  GetProductListSchema,
   CreateProductSchema,
   DeleteProductSchema,
   GetOneSchema,
@@ -31,8 +33,25 @@ export const getOne = async (
 /********************
  * GET PRODUCT LIST *
  ********************/
-export const getMany = async (req: Request, res: Response) => {
-  return res.status(200).json({ message: "products" });
+export const getMany = async (
+  req: ValidatedRequest<typeof GetProductListSchema>,
+  res: Response,
+) => {
+  const { cursor, limit } = req.validated!.query;
+  const { products, totalCount } = await getProductList({ cursor, limit });
+  const hasNextPage = products.length > limit;
+  const nextCursor = hasNextPage ? products[products.length - 1]?.id : null;
+
+  if (hasNextPage) {
+    products.pop(); // Remove the extra product used to check for next page
+  }
+
+  const meta = {
+    totalCount,
+    hasNextPage,
+    nextCursor,
+  };
+  sendResponse({ res, data: products, meta, message: "Product List" });
 };
 
 /**********************
@@ -44,6 +63,7 @@ export const create = async (
 ) => {
   const {
     name,
+    author,
     description,
     categoryId,
     discount,
@@ -60,6 +80,7 @@ export const create = async (
 
   const product = await createProduct({
     name,
+    author,
     description,
     categoryId,
     discount,

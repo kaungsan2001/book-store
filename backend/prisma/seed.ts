@@ -35,7 +35,38 @@ async function main() {
     });
 }
 
-main()
+async function books() {
+  const fakeBooks = Array.from({ length: 100 }).map(() => {
+    return prisma.product.create({
+      data: {
+        name: faker.book.title(),
+        author: faker.book.author(),
+        description: faker.lorem.paragraphs(3),
+        categoryId: "d0tvvs08wdymw77bn8xgnwho",
+        price: faker.number.int({ min: 10, max: 100 }),
+        discount: faker.number.int({ min: 0, max: 50 }),
+        inventory: faker.number.int({ min: 1, max: 100 }),
+        productImages: {
+          create: [
+            {
+              imageUrl:
+                "https://images.unsplash.com/photo-1610116306796-6fea9f4fae38?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+              imageId: "product/ks9r3d4n5oofpstdfan1",
+            },
+            {
+              imageUrl:
+                "https://images.unsplash.com/photo-1513185041617-8ab03f83d6c5?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+              imageId: "product/ks9r3d4n5oofpstdfan1",
+            },
+          ],
+        },
+      },
+    });
+  });
+
+  await Promise.all(fakeBooks);
+}
+books()
   .catch((e) => {
     console.error(e);
     process.exit(1);
@@ -43,3 +74,11 @@ main()
   .finally(async () => {
     await prisma.$disconnect();
   });
+// main()
+//   .catch((e) => {
+//     console.error(e);
+//     process.exit(1);
+//   })
+//   .finally(async () => {
+//     await prisma.$disconnect();
+//   });

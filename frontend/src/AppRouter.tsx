@@ -42,7 +42,7 @@ let router = createBrowserRouter([
         path: "products",
         children: [
           { index: true, Component: ProductListPage },
-          { path: "detail/:id", Component: ProductDetailPage },
+          { path: ":id", Component: ProductDetailPage },
           { path: "checkout", Component: CheckOutPage },
         ],
       },

@@ -16,16 +16,51 @@ export const getProductById = async (id: string): Promise<Product | null> => {
  * GET PRODUCT LIST BY PAGINATION SERVICE *
  ********************************************/
 export const getProductList = async ({
+  cursor,
   limit,
-  skip,
 }: {
   limit: number;
-  skip: number;
-}): Promise<Product[] | []> => {
-  return await prisma.product.findMany({
-    take: limit + 1,
-    skip,
-  });
+  cursor?: string;
+}) => {
+  const [totalCount, products] = await Promise.all([
+    prisma.product.count(),
+    prisma.product.findMany({
+      take: limit + 1,
+      skip: cursor ? 1 : 0, // Skip the cursor if it exists
+      cursor: cursor ? { id: cursor } : undefined, // Set the cursor if it exists
+      select: {
+        id: true,
+        name: true,
+        author: true,
+        description: true,
+        price: true,
+        discount: true,
+        inventory: true,
+        categoryId: true,
+        productTag: {
+          select: {
+            name: true,
+          },
+        },
+        productImages: {
+          select: {
+            imageUrl: true,
+          },
+        },
+        createdAt: true,
+        updatedAt: true,
+        category: {
+          select: {
+            name: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    }),
+  ]);
+  return { totalCount, products };
 };
 
 /******************************
@@ -39,6 +74,7 @@ export const createProduct = async (
       name: data.name,
       description: data.description,
       price: data.price,
+      author: data.author,
       discount: data.discount,
       inventory: data.inventory,
       category: {
