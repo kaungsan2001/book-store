@@ -27,7 +27,7 @@ export const getOne = async (
 ) => {
   const id = req.validated!.params.id;
   const product = await getProductById(id);
-  sendResponse({ res, data: { product }, message: "Product" });
+  sendResponse({ res, data: product, message: "Product" });
 };
 
 /********************

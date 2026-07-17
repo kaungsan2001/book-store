@@ -10,6 +10,10 @@ import type { CreateProductInput } from "./product.schema";
 export const getProductById = async (id: string): Promise<Product | null> => {
   return await prisma.product.findUnique({
     where: { id },
+    include: {
+      productImages: true,
+      category: true,
+    },
   });
 };
 /********************************************
