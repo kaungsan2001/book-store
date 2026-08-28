@@ -13,13 +13,14 @@ import { Button } from "@/components/ui/button";
 import { ModeToggle } from "../mode-toggle";
 import { Form } from "react-router";
 import { Paths } from "@/config/constants";
+import { ProgressBar } from "@/components/web/progress-bar";
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const navLinks = [
-    { name: "Home", href: "#hero" },
+    { name: "Home", href: "/" },
     { name: "New Arrivals", href: "#new-arrivals" },
     { name: "Best Sellers", href: "#best-sellers" },
     { name: "Categories", href: "#categories-section" },
@@ -27,6 +28,7 @@ export default function Header() {
 
   return (
     <>
+      <ProgressBar />
       <header
         id="app-header"
         className="sticky top-0 z-40 w-full border-b border-border/40 bg-background/80 backdrop-blur-md"
