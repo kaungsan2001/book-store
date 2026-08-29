@@ -31,3 +31,12 @@ export type ProductsResponse = {
     nextCursor: string | null;
   };
 };
+
+export type Category = {
+  id: string;
+  name: string;
+};
+
+export type CategoriesResponse = {
+  data: Category[];
+};

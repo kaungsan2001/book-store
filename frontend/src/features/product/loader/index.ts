@@ -1,5 +1,5 @@
 import { queryClient } from "@/api/query";
-import { productDetailQuery } from "../api";
+import { categoriesQuery, productDetailQuery, productListQuery } from "../api";
 
 export async function productDetailLoader({
   params,
@@ -7,4 +7,9 @@ export async function productDetailLoader({
   params: { id: string };
 }) {
   await queryClient.ensureQueryData(productDetailQuery(params.id));
+}
+
+export async function productListLoader() {
+  await queryClient.ensureQueryData(categoriesQuery());
+  await queryClient.ensureQueryData(productListQuery());
 }
