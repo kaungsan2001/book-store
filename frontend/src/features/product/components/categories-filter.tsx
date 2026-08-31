@@ -12,16 +12,20 @@ import { useForm, Controller } from "react-hook-form";
 
 type CategoriesFilterProps = {
   categories: Category[];
+  handleCategoriesChange: (categories: string[]) => void;
 };
-export function CategoriesFilter({ categories }: CategoriesFilterProps) {
+export function CategoriesFilter({
+  categories,
+  handleCategoriesChange,
+}: CategoriesFilterProps) {
   const { handleSubmit, control } = useForm({
     defaultValues: {
       categories: [],
     },
   });
 
-  function onSubmit(data: CategoriesFilterProps) {
-    console.log(data);
+  function onSubmit(data: { categories: string[] }) {
+    handleCategoriesChange(data.categories);
   }
 
   return (

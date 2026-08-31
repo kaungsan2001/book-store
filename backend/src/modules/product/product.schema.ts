@@ -11,6 +11,15 @@ export const GetProductListSchema = z.object({
   query: z.object({
     cursor: z.cuid2().optional(),
     limit: z.coerce.number().int().positive().catch(10), //safely falls back to 10 if missing, empty, or invalid.
+    categories: z
+      .string()
+      // .refine((categories) =>
+      //   categories
+      //     .split(",")
+      //     .map((category) => category.trim())
+      //     .filter((category) => category.length > 0),
+      // )
+      .optional(),
   }),
 });
 export type GetProductListType = z.infer<typeof GetProductListSchema>["query"];

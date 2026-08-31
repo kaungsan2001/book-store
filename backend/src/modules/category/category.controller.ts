@@ -80,53 +80,38 @@ export const getAllCategories = async (
   req: ValidatedRequest<typeof getAllCategoriesSchema>,
   res: Response,
 ) => {
-  const { page, limit } = req.validated!.query;
-  const skip = (page - 1) * limit;
+  // const cache = await getCache(`${CACHE_KEYS.CATEGORIES}${limit}${skip}`);
 
-  const cache = await getCache(`${CACHE_KEYS.CATEGORIES}${limit}${skip}`);
+  // if (cache) {
+  //   return sendResponse({
+  //     res,
+  //     message: "Categories List",
+  //     data: cache.categories,
+  //     meta: cache.meta,
+  //   });
+  // }
 
-  if (cache) {
-    return sendResponse({
-      res,
-      message: "Categories List",
-      data: cache.categories,
-      meta: cache.meta,
-    });
-  }
+  const { totalCount, categories } = await getAllCategoriesService();
 
-  const { totalCount, categories } = await getAllCategoriesService({
-    limit,
-    skip,
-  });
+  // const hasNextPage = categories.length > limit;
+  // const nextPage = hasNextPage ? page + 1 : null;
+  // const previousPage = page !== 1 ? page - 1 : null;
+  // const totalPage = Math.ceil(totalCount / limit);
 
-  const hasNextPage = categories.length > limit;
-  const nextPage = hasNextPage ? page + 1 : null;
-  const previousPage = page !== 1 ? page - 1 : null;
-  const totalPage = Math.ceil(totalCount / limit);
+  // if (hasNextPage) {
+  //   categories.pop();
+  // }
 
-  if (hasNextPage) {
-    categories.pop();
-  }
-
-  const meta = {
-    hasNextPage,
-    nextPage,
-    previousPage,
-    currentPage: page,
-    totalPage,
-  };
-
-  await setCache({
-    key: `${CACHE_KEYS.CATEGORIES}${limit}${skip}`,
-    exp: 3600,
-    data: { categories, meta },
-  });
+  // await setCache({
+  //   key: `${CACHE_KEYS.CATEGORIES}${limit}${skip}`,
+  //   exp: 3600,
+  //   data: { categories, meta },
+  // });
 
   sendResponse({
     res,
     message: "Categories List",
     data: categories,
-    meta,
   });
 };
 

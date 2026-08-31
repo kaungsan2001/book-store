@@ -37,8 +37,13 @@ export const getMany = async (
   req: ValidatedRequest<typeof GetProductListSchema>,
   res: Response,
 ) => {
-  const { cursor, limit } = req.validated!.query;
-  const { products, totalCount } = await getProductList({ cursor, limit });
+  const { cursor, limit, categories } = req.validated!.query;
+  const categoriesArray = categories?.split(",");
+  const { products, totalCount } = await getProductList({
+    cursor,
+    limit,
+    categories: categoriesArray,
+  });
   const hasNextPage = products.length > limit;
   const nextCursor = hasNextPage ? products[products.length - 1]?.id : null;
 

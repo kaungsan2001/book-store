@@ -22,16 +22,26 @@ export const getProductById = async (id: string): Promise<Product | null> => {
 export const getProductList = async ({
   cursor,
   limit,
+  categories,
 }: {
   limit: number;
   cursor?: string;
+  categories?: string[] | undefined;
 }) => {
+  console.log("categories in service", categories);
   const [totalCount, products] = await Promise.all([
     prisma.product.count(),
     prisma.product.findMany({
       take: limit + 1,
       skip: cursor ? 1 : 0, // Skip the cursor if it exists
       cursor: cursor ? { id: cursor } : undefined, // Set the cursor if it exists
+      where: categories
+        ? {
+            categoryId: {
+              in: categories,
+            },
+          }
+        : undefined,
       select: {
         id: true,
         name: true,

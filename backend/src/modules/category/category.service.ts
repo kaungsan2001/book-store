@@ -44,18 +44,10 @@ export const getCategoryById = async (id: string): Promise<Category> => {
 /**********************************
  * GET ALL CATEGORIES WITH PAGINATION *
  **********************************/
-export const getAllCategoriesService = async ({
-  limit,
-  skip,
-}: {
-  limit: number;
-  skip: number;
-}) => {
+export const getAllCategoriesService = async () => {
   const [totalCount, categories] = await Promise.all([
     prisma.category.count(),
     prisma.category.findMany({
-      take: limit + 1,
-      skip,
       orderBy: {
         createdAt: "desc",
       },

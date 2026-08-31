@@ -23,7 +23,7 @@ export type ProductDetailResponse = {
   data: Product;
 };
 
-export type ProductsResponse = {
+export type ProductListResponse = {
   data: Product[];
   meta: {
     totalCount: number;
