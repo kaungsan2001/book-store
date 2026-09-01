@@ -7,15 +7,19 @@ import { Button } from "@/components/ui/button";
 
 export default function ProductListPage() {
   const [searchParams, setSearchParams] = useSearchParams();
+
   const { data: categories } = useSuspenseQuery(categoriesQuery());
+  const categoryIds = categories?.data.map((c) => c.id);
 
   const categoriesParam = searchParams.get("categories") || null;
+
   const selectedCategories = categoriesParam
     ? [
         ...new Set(
           decodeURIComponent(categoriesParam)
             .split(",")
-            .map((cat) => cat.trim()),
+            .map((cat) => cat.trim())
+            .filter((cat) => !!cat && categoryIds?.includes(cat)),
         ),
       ]
     : [];
@@ -44,12 +48,13 @@ export default function ProductListPage() {
         <CategoriesFilter
           categories={categories.data}
           handleCategoriesChange={handleCategoriesChange}
+          selectedCategories={selectedCategories}
         />
       </div>
       <div className="lg:p-5">
         <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-5">
           {allProducts.map((p) => (
-            <ProductCard product={p} />
+            <ProductCard product={p} key={p.id} />
           ))}
         </div>
 

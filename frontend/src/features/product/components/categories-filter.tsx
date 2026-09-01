@@ -13,14 +13,16 @@ import { useForm, Controller } from "react-hook-form";
 type CategoriesFilterProps = {
   categories: Category[];
   handleCategoriesChange: (categories: string[]) => void;
+  selectedCategories: string[];
 };
 export function CategoriesFilter({
   categories,
   handleCategoriesChange,
+  selectedCategories,
 }: CategoriesFilterProps) {
   const { handleSubmit, control } = useForm({
     defaultValues: {
-      categories: [],
+      categories: selectedCategories,
     },
   });
 
@@ -42,8 +44,7 @@ export function CategoriesFilter({
                 name="categories"
                 control={control}
                 render={({ field }) => {
-                  const currentValues = (field.value as string[]) || [];
-                  const isChecked = currentValues.includes(category.id);
+                  const isChecked = field.value?.includes(category.id);
                   return (
                     <>
                       <Checkbox
@@ -51,10 +52,10 @@ export function CategoriesFilter({
                         checked={isChecked}
                         onCheckedChange={(checked) => {
                           if (checked) {
-                            field.onChange([...currentValues, category.id]);
+                            field.onChange([...field.value, category.id]);
                           } else {
                             field.onChange(
-                              currentValues.filter(
+                              field.value?.filter(
                                 (id: string) => id !== category.id,
                               ),
                             );
