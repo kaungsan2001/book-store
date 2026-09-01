@@ -18,8 +18,14 @@ export const productListQuery = () => ({
 });
 
 //------------------------------------------------------------
-async function fetchInfiniteProductList(categories: string | null = null) {
-  const query = `?limit=10${categories ? `&categories=${categories}` : ""}`;
+async function fetchInfiniteProductList({
+  pageParam,
+  categories,
+}: {
+  pageParam?: string | null;
+  categories?: string | null;
+}): Promise<ProductListResponse> {
+  const query = `?limit=10${categories ? `&categories=${categories}` : ""}${pageParam ? `&cursor=${pageParam}` : ""}`;
 
   const { data } = await api.get<ProductListResponse>(`/products${query}`);
   return data;
@@ -27,7 +33,8 @@ async function fetchInfiniteProductList(categories: string | null = null) {
 
 export const infiniteProductListQuery = (categories: string | null = null) => ({
   queryKey: ["products", "infinite", categories ?? undefined],
-  queryFn: () => fetchInfiniteProductList(categories),
+  queryFn: ({ pageParam }: { pageParam?: string | null }) =>
+    fetchInfiniteProductList({ pageParam, categories }),
   placeholderData: keepPreviousData,
   initialPageParam: null,
   getNextPageParam: (lastPage: ProductListResponse) =>
@@ -35,7 +42,9 @@ export const infiniteProductListQuery = (categories: string | null = null) => ({
 });
 
 //-------------------------------------------------------------
-export async function fetchProductDetail(id: string) {
+export async function fetchProductDetail(
+  id: string,
+): Promise<ProductDetailResponse> {
   const { data } = await api.get<ProductDetailResponse>(`/products/${id}`);
   return data;
 }

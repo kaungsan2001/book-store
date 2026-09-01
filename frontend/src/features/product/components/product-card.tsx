@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import type { Product } from "../schema";
 import { Link } from "react-router";
+import { Badge } from "@/components/ui/badge";
 
 export function ProductCard({ product }: { product: Product }) {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -82,7 +83,9 @@ export function ProductCard({ product }: { product: Product }) {
           >
             {product.name}
           </Link>
+
           <p className="text-sm text-gray-500 italic mb-1">{product.author}</p>
+          <Badge variant="secondary">{product.category.name}</Badge>
           <p className="text-gray-600 text-sm line-clamp-2">
             {product.description}
           </p>

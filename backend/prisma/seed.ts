@@ -3,7 +3,6 @@ import { PrismaClient } from "../src/generated/prisma/client";
 import { PrismaNeon } from "@prisma/adapter-neon";
 import { faker } from "@faker-js/faker";
 import { hasher } from "../src/utils/hash";
-import { email } from "zod";
 
 const adapter = new PrismaNeon({
   connectionString: process.env.DATABASE_URL!,
