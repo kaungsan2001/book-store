@@ -30,7 +30,10 @@ import ArticleListPage from "./features/articles/pages/ArticleListPage";
 import ArticleDetailPage from "./features/articles/pages/ArticleDetailPage";
 import { homeLoader } from "./features/web/loader";
 import { articlesInfiniteLoader } from "./features/articles/loader";
-import { productListLoader } from "./features/product/loader";
+import {
+  productListLoader,
+  productDetailLoader,
+} from "./features/product/loader";
 
 let router = createBrowserRouter([
   {
@@ -43,8 +46,16 @@ let router = createBrowserRouter([
       {
         path: "products",
         children: [
-          { index: true, Component: ProductListPage  , loader : productListLoader},
-          { path: ":id", Component: ProductDetailPage },
+          {
+            index: true,
+            Component: ProductListPage,
+            loader: productListLoader,
+          },
+          {
+            path: ":id",
+            Component: ProductDetailPage,
+            loader: productDetailLoader,
+          },
           { path: "checkout", Component: CheckOutPage },
         ],
       },

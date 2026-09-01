@@ -4,15 +4,37 @@ import createHttpError from "http-errors";
 import type { Product } from "../../generated/prisma/client";
 import type { CreateProductInput } from "./product.schema";
 
+// helper function
+async function isProductExist(id: string): Promise<boolean> {
+  const isExist = await prisma.product.findFirst({
+    where: { id },
+    select: { id: true },
+  });
+  return isExist ? true : false;
+}
 /*****************************
  * GET PRODUCT BY ID SERVICE *
  *****************************/
-export const getProductById = async (id: string): Promise<Product | null> => {
+export const getProductById = async ({
+  id,
+  userId,
+}: {
+  id: string;
+  userId: string;
+}): Promise<Product | null> => {
   return await prisma.product.findUnique({
     where: { id },
     include: {
       productImages: true,
       category: true,
+      likedBy: {
+        where: {
+          id: userId,
+        },
+        select: {
+          id: true,
+        },
+      },
     },
   });
 };
@@ -120,7 +142,7 @@ export const update = async () => {};
 export const deleteProductById = async (
   id: string,
 ): Promise<Product | void> => {
-  const product = await getProductById(id);
+  const product = await isProductExist(id);
   if (!product)
     throw createHttpError(404, "Resource Not Found.", {
       code: ERRORS.NOT_FOUND,
@@ -135,7 +157,7 @@ export const deleteProductById = async (
 export const softDeleteProductById = async (
   id: string,
 ): Promise<Product | void> => {
-  const product = await getProductById(id);
+  const product = await isProductExist(id);
   if (!product)
     throw createHttpError(404, "Resource Not Found.", {
       code: ERRORS.NOT_FOUND,
@@ -155,7 +177,7 @@ export const softDeleteProductById = async (
 export const restoreProductById = async (
   id: string,
 ): Promise<Product | void> => {
-  const product = await getProductById(id);
+  const product = await isProductExist(id);
   if (!product)
     throw createHttpError(404, "Resource Not Found.", {
       code: ERRORS.NOT_FOUND,
@@ -165,4 +187,58 @@ export const restoreProductById = async (
     where: { id },
     data: { deletedAt: null },
   });
+};
+
+// like toggle service
+
+export const likeToggleService = async ({
+  userId,
+  productId,
+}: {
+  userId: string;
+  productId: string;
+}) => {
+  const product = await isProductExist(productId);
+  if (!product) {
+    throw createHttpError(404, "Product not found.", {
+      code: ERRORS.NOT_FOUND,
+    });
+  }
+
+  const isLiked = await prisma.user.findFirst({
+    where: {
+      id: userId,
+      likedProducts: {
+        some: {
+          id: productId,
+        },
+      },
+    },
+  });
+
+  if (isLiked) {
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        likedProducts: {
+          disconnect: {
+            id: productId,
+          },
+        },
+      },
+    });
+  } else {
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        likedProducts: {
+          connect: {
+            id: productId,
+          },
+        },
+      },
+    });
+  }
+
+  return;
 };

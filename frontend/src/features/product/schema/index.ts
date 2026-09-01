@@ -20,7 +20,29 @@ export type Product = {
 };
 
 export type ProductDetailResponse = {
-  data: Product;
+  data: {
+    id: string;
+    name: string;
+    author: string;
+    category: {
+      id: string;
+      name: string;
+    };
+    description: string;
+    price: number;
+    imageUrl: string;
+    imageId: string;
+    createdAt: string;
+    updatedAt: string;
+    likedBy: {
+      id: string;
+    }[];
+    productImages: Array<{
+      id: string;
+      imageUrl: string;
+      imageId: string;
+    }>;
+  };
 };
 
 export type ProductListResponse = {

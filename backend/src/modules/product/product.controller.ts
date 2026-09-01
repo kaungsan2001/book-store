@@ -5,6 +5,7 @@ import {
   deleteProductById,
   getProductById,
   getProductList,
+  likeToggleService,
 } from "./product.service";
 import type { ValidatedRequest } from "../../middlewares/validate.middleware";
 import type {
@@ -12,6 +13,7 @@ import type {
   CreateProductSchema,
   DeleteProductSchema,
   GetOneSchema,
+  ProductLikeToggleSchema,
 } from "./product.schema";
 import type { AuthenticatedRequest } from "../../middlewares/auth.middleware";
 import { getCategoryById } from "../category/category.service";
@@ -22,11 +24,12 @@ import { ERRORS } from "../../config/constants";
  * GET A PRODUCT *
  *****************/
 export const getOne = async (
-  req: ValidatedRequest<typeof GetOneSchema>,
+  req: ValidatedRequest<typeof GetOneSchema> & AuthenticatedRequest,
   res: Response,
 ) => {
   const id = req.validated!.params.id;
-  const product = await getProductById(id);
+  const userId = req.user!.id as string;
+  const product = await getProductById({ id, userId });
   sendResponse({ res, data: product, message: "Product" });
 };
 
@@ -112,4 +115,21 @@ export const remove = async (
   const id = req.validated!.params.id;
   const product = await deleteProductById(id);
   sendResponse({ res, data: { product }, message: "A Product Deleted" });
+};
+
+// like toggle
+
+export const likeToggle = async (
+  req: ValidatedRequest<typeof ProductLikeToggleSchema> & AuthenticatedRequest,
+  res: Response,
+) => {
+  const { productId } = req.validated!.body;
+  const userId = req.user?.id as string;
+
+  await likeToggleService({ productId, userId });
+  sendResponse({
+    res,
+    data: null,
+    message: "Product like toggled successfully",
+  });
 };

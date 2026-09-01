@@ -2,19 +2,23 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { productDetailQuery } from "../api";
 import { useParams } from "react-router";
 import { useState } from "react";
+import { useNavigate } from "react-router";
 import {
   ShoppingCart,
   CreditCard,
-  Heart,
   ChevronLeft,
   ChevronRight,
+  ArrowLeft,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { LikeToggleButton } from "../components/like-toggle";
 
 export default function ProductDetailPage() {
-  const { id } = useParams();
+  const navigate = useNavigate();
+  const { id } = useParams() as { id: string };
+
   const { data } = useSuspenseQuery(productDetailQuery(id as string));
 
   const product = data.data;
@@ -31,7 +35,6 @@ export default function ProductDetailPage() {
 
   const prevImage = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    console.log("prev work");
     setCurrentImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
   };
 
@@ -40,6 +43,14 @@ export default function ProductDetailPage() {
   };
   return (
     <div className="container mx-auto max-w-6xl px-4 py-8 md:py-12">
+      <Button
+        onClick={() => navigate("/products")}
+        variant="secondary"
+        className="mb-4"
+      >
+        <ArrowLeft className="mr-2 h-4 w-4" />
+        All Books
+      </Button>
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:gap-12">
         {/* Left Column: Image Gallery */}
         <div className="flex flex-col gap-4">
@@ -47,6 +58,8 @@ export default function ProductDetailPage() {
             <img
               src={images[currentImageIndex]?.imageUrl}
               alt={`${product.name} cover`}
+              loading="lazy"
+              decoding="async"
               className="h-full w-full object-contain"
             />
 
@@ -85,7 +98,9 @@ export default function ProductDetailPage() {
                 >
                   <img
                     src={img.imageUrl}
-                    alt=""
+                    alt={product.name}
+                    loading="lazy"
+                    decoding="async"
                     className="h-full w-full object-cover"
                   />
                 </button>
@@ -104,13 +119,11 @@ export default function ProductDetailPage() {
               >
                 {product.category.name}
               </Badge>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="rounded-full text-muted-foreground hover:text-destructive"
-              >
-                <Heart className="h-5 w-5" />
-              </Button>
+
+              <LikeToggleButton
+                productId={id}
+                isLiked={product.likedBy.length > 0}
+              />
             </div>
 
             <h1 className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">

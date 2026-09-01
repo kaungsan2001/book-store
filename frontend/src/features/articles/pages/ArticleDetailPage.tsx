@@ -1,5 +1,4 @@
-import { Calendar, Clock, Tag, Share2, Bookmark, Heart } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Calendar, Clock, Tag } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";

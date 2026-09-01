@@ -65,3 +65,6 @@ export const categoriesQuery = () => ({
   queryKey: ["categories"],
   queryFn: fetchCategories,
 });
+
+export const productLikeToggleFn = async (productId: string) =>
+  await api.patch("products/like-toggle", { productId });

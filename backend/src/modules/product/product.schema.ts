@@ -85,3 +85,12 @@ export const DeleteProductSchema = z.object({
 });
 
 export type DeleteProductType = z.infer<typeof DeleteProductSchema>["params"];
+
+export const ProductLikeToggleSchema = z.object({
+  body: z.object({
+    productId: z.cuid2({ error: "Invalid Product Id." }),
+  }),
+});
+export type ProductLikeToggleType = z.infer<
+  typeof ProductLikeToggleSchema
+>["body"];
