@@ -1,15 +1,16 @@
-import { ArrowLeft, ArrowRight, ShoppingCart, CreditCard } from "lucide-react";
-import { Button } from "@/components/ui/button";
-
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useState } from "react";
 import type { Product } from "../schema";
 import { Link } from "react-router";
 import { Badge } from "@/components/ui/badge";
 import useCartStore from "@/features/cart/store";
+import {
+  AddToCartButton,
+  BuyNowButton,
+  RemoveFromCartButton,
+} from "./product-action-buttons";
 
 export function ProductCard({ product }: { product: Product }) {
-  const addCartItem = useCartStore((state) => state.addCartItem);
-  const removeItem = useCartStore((state) => state.removeItem);
   const isItemInCart = useCartStore((state) =>
     state.cartItems.some((item) => item.id === product.id),
   );
@@ -103,28 +104,11 @@ export function ProductCard({ product }: { product: Product }) {
 
           <div className="flex flex-col">
             {isItemInCart ? (
-              <Button
-                variant="destructive"
-                className="mt-2 w-full sm:w-auto"
-                onClick={() => removeItem(product.id)}
-              >
-                <ShoppingCart />
-                Remove From Cart
-              </Button>
+              <RemoveFromCartButton productId={product.id} />
             ) : (
-              <Button
-                variant="outline"
-                className="mt-2 w-full sm:w-auto"
-                onClick={() => addCartItem({ ...product, quantity: 1 })}
-              >
-                <ShoppingCart />
-                Add to Cart
-              </Button>
+              <AddToCartButton product={product} />
             )}
-            <Button variant="default" className="mt-2 w-full sm:w-auto">
-              <CreditCard className="mr-2 h-4 w-4" />
-              Buy Now
-            </Button>
+            <BuyNowButton />
           </div>
         </div>
       </div>

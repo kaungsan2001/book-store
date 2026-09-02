@@ -3,18 +3,18 @@ import { productDetailQuery } from "../api";
 import { useParams } from "react-router";
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import {
-  ShoppingCart,
-  CreditCard,
-  ChevronLeft,
-  ChevronRight,
-  ArrowLeft,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { LikeToggleButton } from "../components/like-toggle";
+import { LikeToggleButton } from "../components/product-action-buttons";
 import useAuthStore from "@/features/auth/store";
+import useCartStore from "@/features/cart/store";
+import {
+  AddToCartButton,
+  BuyNowButton,
+  RemoveFromCartButton,
+} from "../components/product-action-buttons";
 
 export default function ProductDetailPage() {
   const navigate = useNavigate();
@@ -25,8 +25,6 @@ export default function ProductDetailPage() {
 
   const product = data.data;
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [quantity, setQuantity] = useState(1);
-
   const images = product.productImages;
 
   const nextImage = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -39,6 +37,14 @@ export default function ProductDetailPage() {
     e.stopPropagation();
     setCurrentImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
   };
+
+  // Quantity state for the product
+
+  const cartItems = useCartStore((state) => state.cartItems);
+  const isItemInCart = cartItems.find((item) => item.id === product.id);
+  const [quantity, setQuantity] = useState(
+    isItemInCart ? isItemInCart.quantity : 1,
+  );
 
   const handleQuantityChange = (amount: number) => {
     setQuantity((prev) => Math.max(1, prev + amount));
@@ -122,13 +128,11 @@ export default function ProductDetailPage() {
                 {product.category.name}
               </Badge>
 
-              {authStatus === "authenticated" ? (
+              {authStatus === "authenticated" && (
                 <LikeToggleButton
                   productId={id}
                   isLiked={product.likedBy.length > 0}
                 />
-              ) : (
-                <></>
               )}
             </div>
 
@@ -192,22 +196,13 @@ export default function ProductDetailPage() {
 
             {/* Action Buttons */}
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <Button
-                variant="outline"
-                size="lg"
-                className="w-full gap-2 border-primary text-primary hover:bg-primary/5 font-semibold"
-              >
-                <ShoppingCart className="h-5 w-5" />
-                Add to Cart
-              </Button>
+              {isItemInCart ? (
+                <RemoveFromCartButton productId={product.id} />
+              ) : (
+                <AddToCartButton product={product} quantity={quantity} />
+              )}
 
-              <Button
-                size="lg"
-                className="w-full gap-2 font-semibold shadow-md shadow-primary/10"
-              >
-                <CreditCard className="h-5 w-5" />
-                Buy Now
-              </Button>
+              <BuyNowButton />
             </div>
           </div>
         </div>
