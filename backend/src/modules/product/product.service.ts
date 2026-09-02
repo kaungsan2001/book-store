@@ -20,19 +20,26 @@ export const getProductById = async ({
   userId,
 }: {
   id: string;
-  userId: string;
+  userId: string | null;
 }): Promise<Product | null> => {
   return await prisma.product.findUnique({
     where: { id },
     include: {
       productImages: true,
       category: true,
-      likedBy: {
-        where: {
-          id: userId,
-        },
+      likedBy: userId
+        ? {
+            where: {
+              id: userId,
+            },
+            select: {
+              id: true,
+            },
+          }
+        : undefined,
+      _count: {
         select: {
-          id: true,
+          likedBy: true,
         },
       },
     },

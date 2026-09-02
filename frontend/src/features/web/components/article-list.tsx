@@ -12,7 +12,7 @@ export default function ArticleList() {
       </h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {articles?.data.map((article) => (
-          <ArticleCard article={article} />
+          <ArticleCard article={article} key={article.id} />
         ))}
       </div>
       <div className="flex justify-center items-center mt-4">

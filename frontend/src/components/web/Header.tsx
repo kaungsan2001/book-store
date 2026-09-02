@@ -1,19 +1,12 @@
 import { useState } from "react";
-import {
-  BookOpenText,
-  ShoppingCart,
-  User,
-  Menu,
-  X,
-  Search,
-  LogOut,
-} from "lucide-react";
+import { BookOpenText, User, Menu, X, Search, LogOut } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "../mode-toggle";
 import { Form } from "react-router";
 import { Paths } from "@/config/constants";
 import { ProgressBar } from "@/components/web/progress-bar";
+import { CartSidebar } from "@/features/cart/components/cart-sidebar";
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -76,25 +69,17 @@ export default function Header() {
               />
             </div>
 
-            {/* Shopping Cart Trigger */}
-            <Button
-              id="header-cart-btn"
-              variant="outline"
-              size="icon"
-              className="relative rounded-full h-10 w-10 border-border/50 hover:bg-muted/30 hover:text-primary transition-colors cursor-pointer"
-              aria-label={`Open shopping cart with  items`}
-            >
-              <ShoppingCart className="h-4.5 w-4.5" />
-            </Button>
+            {/* Shopping Cart  */}
+
+            <CartSidebar />
 
             {/* User Profile Button */}
             <div className="relative">
               <Button
                 id="header-user-btn"
                 onClick={() => setIsProfileOpen(!isProfileOpen)}
-                variant="outline"
+                variant="ghost"
                 size="icon"
-                className="rounded-full h-10 w-10 border-border/50 hover:bg-muted/30 focus-visible:ring-1 focus-visible:ring-primary/40"
                 aria-label="Toggle user panel"
               >
                 <User className="h-4.5 w-4.5" />

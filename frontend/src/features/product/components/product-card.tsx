@@ -1,11 +1,19 @@
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, ShoppingCart, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
 import { useState } from "react";
 import type { Product } from "../schema";
 import { Link } from "react-router";
 import { Badge } from "@/components/ui/badge";
+import useCartStore from "@/features/cart/store";
 
 export function ProductCard({ product }: { product: Product }) {
+  const addCartItem = useCartStore((state) => state.addCartItem);
+  const removeItem = useCartStore((state) => state.removeItem);
+  const isItemInCart = useCartStore((state) =>
+    state.cartItems.some((item) => item.id === product.id),
+  );
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const images = product.productImages || [];
 
@@ -92,9 +100,32 @@ export function ProductCard({ product }: { product: Product }) {
         </div>
         <div className="mt-3">
           <p className="font-semibold text-sm">Price: ${product.price}</p>
-          <Button variant="outline" className="mt-2 w-full sm:w-auto">
-            Add to Cart
-          </Button>
+
+          <div className="flex flex-col">
+            {isItemInCart ? (
+              <Button
+                variant="destructive"
+                className="mt-2 w-full sm:w-auto"
+                onClick={() => removeItem(product.id)}
+              >
+                <ShoppingCart />
+                Remove From Cart
+              </Button>
+            ) : (
+              <Button
+                variant="outline"
+                className="mt-2 w-full sm:w-auto"
+                onClick={() => addCartItem({ ...product, quantity: 1 })}
+              >
+                <ShoppingCart />
+                Add to Cart
+              </Button>
+            )}
+            <Button variant="default" className="mt-2 w-full sm:w-auto">
+              <CreditCard className="mr-2 h-4 w-4" />
+              Buy Now
+            </Button>
+          </div>
         </div>
       </div>
     </div>

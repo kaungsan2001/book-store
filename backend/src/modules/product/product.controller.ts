@@ -28,7 +28,7 @@ export const getOne = async (
   res: Response,
 ) => {
   const id = req.validated!.params.id;
-  const userId = req.user!.id as string;
+  const userId = req.user?.id ?? null;
   const product = await getProductById({ id, userId });
   sendResponse({ res, data: product, message: "Product" });
 };

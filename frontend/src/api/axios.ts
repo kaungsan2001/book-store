@@ -62,7 +62,7 @@ api.interceptors.response.use(
         return new Promise((resolve, reject) => {
           waitingRequests.push({ resolve, reject });
         })
-          .then(() => authApi(originalRequest))
+          .then(() => api(originalRequest))
           .catch((err) => Promise.reject(err));
       }
 
@@ -73,7 +73,7 @@ api.interceptors.response.use(
         await refreshAccessToken();
 
         retryWaitingRequests();
-        return authApi(originalRequest);
+        return api(originalRequest);
       } catch (error) {
         retryWaitingRequests(error);
         window.location.href = "/auth/sign-in";

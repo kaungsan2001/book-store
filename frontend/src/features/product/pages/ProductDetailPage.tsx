@@ -14,10 +14,12 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { LikeToggleButton } from "../components/like-toggle";
+import useAuthStore from "@/features/auth/store";
 
 export default function ProductDetailPage() {
   const navigate = useNavigate();
   const { id } = useParams() as { id: string };
+  const authStatus = useAuthStore().status;
 
   const { data } = useSuspenseQuery(productDetailQuery(id as string));
 
@@ -120,10 +122,14 @@ export default function ProductDetailPage() {
                 {product.category.name}
               </Badge>
 
-              <LikeToggleButton
-                productId={id}
-                isLiked={product.likedBy.length > 0}
-              />
+              {authStatus === "authenticated" ? (
+                <LikeToggleButton
+                  productId={id}
+                  isLiked={product.likedBy.length > 0}
+                />
+              ) : (
+                <></>
+              )}
             </div>
 
             <h1 className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">

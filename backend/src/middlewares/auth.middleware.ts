@@ -48,3 +48,41 @@ export const auth = async (
 
   next();
 };
+
+export const optionalAuth = async (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  const access_token = req.cookies ? req.cookies.access_token : null;
+
+  if (!access_token) {
+    next();
+    return;
+  }
+
+  let decoded;
+  try {
+    decoded = verifyAccessToken(access_token);
+  } catch (error: any) {
+    if (error.name === "TokenExpiredError") {
+      throw createError(401, "Unauthorized", {
+        code: ERRORS.ACCESS_TOKEN_EXPIRED,
+      });
+    }
+
+    if (error.name === "JsonWebTokenError") {
+      throw createError(401, "Unauthorized", {
+        code: ERRORS.UNAUTHORIZED,
+      });
+    }
+
+    throw createError(500, "Internal Server Error", {
+      code: ERRORS.INTERNAL_SERVER_ERROR,
+    });
+  }
+
+  req.user = { id: decoded.userId, role: decoded.role };
+
+  next();
+};

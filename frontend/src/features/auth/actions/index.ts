@@ -4,6 +4,7 @@ import { redirect, type ActionFunctionArgs } from "react-router";
 import useAuthStore from "../store";
 
 export const signInAction = async ({ request }: ActionFunctionArgs) => {
+  const authStore = useAuthStore.getState();
   const formData = await request.formData();
   const data = {
     email: formData.get("email"),
@@ -16,6 +17,11 @@ export const signInAction = async ({ request }: ActionFunctionArgs) => {
     if (res.status !== 200) {
       return res.data;
     }
+    authStore.setAuth(
+      res.data.data.email,
+      res.data.data.token,
+      "authenticated",
+    );
     return redirect("/");
   } catch (error) {
     if (error instanceof AxiosError) {

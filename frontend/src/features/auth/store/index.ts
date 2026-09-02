@@ -2,7 +2,13 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 
-type Status = "none" | "otp" | "verify" | "reset" | "set-password";
+type Status =
+  | "none"
+  | "otp"
+  | "verify"
+  | "reset"
+  | "set-password"
+  | "authenticated";
 
 type State = {
   email: string | null;

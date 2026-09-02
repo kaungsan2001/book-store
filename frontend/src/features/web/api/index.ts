@@ -1,6 +1,6 @@
 import { api } from "@/api/axios";
 import type { ArticlesResponse } from "../schema";
-import type { ProductsResponse } from "@/features/product/schema";
+import type { ProductListResponse } from "@/features/product/schema";
 
 const fetchArticles = async (q?: string): Promise<ArticlesResponse> => {
   const { data } = await api.get<ArticlesResponse>(`/articles${q ?? ""}`);
@@ -12,8 +12,8 @@ export const articlesQuery = (q?: string) => ({
   queryFn: () => fetchArticles(q),
 });
 
-const fetchProducts = async (q?: string): Promise<ProductsResponse> => {
-  const { data } = await api.get<ProductsResponse>(`/products${q ?? ""}`);
+const fetchProducts = async (q?: string): Promise<ProductListResponse> => {
+  const { data } = await api.get<ProductListResponse>(`/products${q ?? ""}`);
   return data;
 };
 
