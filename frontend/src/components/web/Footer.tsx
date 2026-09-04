@@ -24,7 +24,7 @@ export default function Footer() {
   };
 
   return (
-    <footer id="app-footer" className="text-zinc-400">
+    <footer id="app-footer" className="text-zinc-400 mt-20">
       {/* Newsletter signup banner first */}
       <div className="bg-secondary py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

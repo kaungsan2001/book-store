@@ -108,7 +108,7 @@ export function ProductCard({ product }: { product: Product }) {
             ) : (
               <AddToCartButton product={product} />
             )}
-            <BuyNowButton />
+            <BuyNowButton product={product} />
           </div>
         </div>
       </div>

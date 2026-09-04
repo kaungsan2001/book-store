@@ -9,10 +9,22 @@ import { useMutation } from "@tanstack/react-query";
 import { productLikeToggleFn } from "../api";
 import { useState } from "react";
 import { queryClient } from "@/api/query";
+import { Paths } from "@/config/constants";
+import { useNavigate } from "react-router";
+import useProductStore from "../store";
 
-export function BuyNowButton() {
+export function BuyNowButton({ product }: { product: Product }) {
+  const navigate = useNavigate();
+  const setBuyNowProduct = useProductStore((state) => state.setBuyNowProduct);
   return (
-    <Button variant="default" className="mt-2 w-full sm:w-auto">
+    <Button
+      variant="default"
+      className="mt-2 w-full sm:w-auto"
+      onClick={() => {
+        setBuyNowProduct(product);
+        navigate(`${Paths.checkOut}?buynow=${product.id}`);
+      }}
+    >
       <CreditCard className="mr-2 h-4 w-4" />
       Buy Now
     </Button>
@@ -39,13 +51,22 @@ export function AddToCartButton({
   );
 }
 
-export function RemoveFromCartButton({ productId }: { productId: string }) {
+export function RemoveFromCartButton({
+  productId,
+  setQuantity,
+}: {
+  productId: string;
+  setQuantity?: React.Dispatch<React.SetStateAction<number>>;
+}) {
   const removeItem = useCartStore((state) => state.removeItem);
   return (
     <Button
       variant="destructive"
       className="mt-2 w-full sm:w-auto"
-      onClick={() => removeItem(productId)}
+      onClick={() => {
+        removeItem(productId);
+        setQuantity?.(1); // for product detail page, reset quantity to 1 when removed from cart
+      }}
     >
       <ShoppingCart />
       Remove From Cart

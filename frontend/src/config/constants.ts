@@ -3,4 +3,6 @@ export const Paths = {
   signUp: "/auth/sign-up",
   logout: "/auth/logout",
   otp: "/auth/otp",
+
+  checkOut: "/products/checkout",
 };

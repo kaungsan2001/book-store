@@ -197,12 +197,15 @@ export default function ProductDetailPage() {
             {/* Action Buttons */}
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {isItemInCart ? (
-                <RemoveFromCartButton productId={product.id} />
+                <RemoveFromCartButton
+                  productId={product.id}
+                  setQuantity={setQuantity}
+                />
               ) : (
                 <AddToCartButton product={product} quantity={quantity} />
               )}
 
-              <BuyNowButton />
+              <BuyNowButton product={product} />
             </div>
           </div>
         </div>

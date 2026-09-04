@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
+import { useNavigate } from "react-router";
 import {
   Sheet,
   SheetClose,
@@ -15,8 +15,10 @@ import { ShoppingCart } from "lucide-react";
 import useCartStore from "@/features/cart/store";
 import { Badge } from "@/components/ui/badge";
 import CartItem from "./cart-item";
+import { Paths } from "@/config/constants";
 
 export function CartSidebar() {
+  const navigate = useNavigate();
   const getCartItemCount = useCartStore((state) => state.getCartItemCount());
   const cartItems = useCartStore((state) => state.cartItems);
   const clearCart = useCartStore((state) => state.clearCart);
@@ -42,7 +44,7 @@ export function CartSidebar() {
 
         <ScrollArea className="h-105 w-full">
           {cartItems?.map((item) => (
-            <CartItem item={item} />
+            <CartItem item={item} key={item.id} />
           ))}
 
           {cartItems.length === 0 && (
@@ -53,12 +55,14 @@ export function CartSidebar() {
         </ScrollArea>
 
         {cartItems.length > 0 && (
-          <SheetFooter className="border-t border-gray-50 dark:border-gray-800">
-            <Button type="submit">Buy Now</Button>
-            <Button variant="destructive" onClick={() => clearCart()}>
-              Clear Cart
-            </Button>
-          </SheetFooter>
+          <SheetClose>
+            <SheetFooter className="border-t border-gray-50 dark:border-gray-800">
+              <Button onClick={() => navigate(Paths.checkOut)}>Buy Now</Button>
+              <Button variant="destructive" onClick={() => clearCart()}>
+                Clear Cart
+              </Button>
+            </SheetFooter>
+          </SheetClose>
         )}
       </SheetContent>
     </Sheet>
