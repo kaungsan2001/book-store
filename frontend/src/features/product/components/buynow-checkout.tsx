@@ -2,13 +2,16 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { productDetailQuery } from "../api";
 import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
 
 export default function BuyNowCheckOut({
   productId,
   register,
+  quantity,
 }: {
   productId: string;
   register: any;
+  quantity: number;
 }) {
   const {
     data: { data: product },
@@ -22,12 +25,17 @@ export default function BuyNowCheckOut({
       <CardContent className="space-y-4">
         <Input type="hidden" value={[productId]} {...register("productIds")} />
 
-        <div className="flex justify-between text-sm">
-          <div>
+        <div className=" text-sm">
+          <div className="space-y-1">
             <p>{product.name}</p>
-            <p>Quantity : 1</p>
-            <span className="text-muted-foreground">Subtotal : </span>
-            <span className="font-medium">{product.price}</span>
+            <p className="text-muted-foreground">Quantity : {quantity}</p>
+            <span className="text-muted-foreground">
+              Price : {product.price}
+            </span>
+            <Separator className="my-5" />
+            <p className="font-medium  float-end">
+              Total : {quantity * product.price}
+            </p>
           </div>
         </div>
       </CardContent>

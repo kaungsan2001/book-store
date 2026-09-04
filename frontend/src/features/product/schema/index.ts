@@ -77,21 +77,17 @@ export type CategoriesResponse = {
 // export type OrderInformationType = z.infer<typeof OrderInformation>;
 
 export const OrderInformation = z.object({
-  email: z
-    .string()
-    .min(1, "Email is required")
-    .email("Please enter a valid email"),
+  email: z.email("Please enter a valid email"),
   fullName: z.string().min(1, "Full name is required"),
   phone: z
     .string()
-    .min(1, "Phone number is required")
-    .min(8, "Phone number is too short"),
+    .min(3, "Phone number is required")
+    .max(15, "Phone number is too long"),
   address: z.string().min(1, "Street address is required"),
   city: z.string().min(1, "City is required"),
   township: z.string().min(1, "Township is required"),
-  notes: z.string().optional(),
+  note: z.string().optional(),
   payment: z.string().min(1, "Please select a payment method"),
-  productIds: z.array(z.cuid2()),
 });
 
 export type OrderInformationType = z.infer<typeof OrderInformation>;

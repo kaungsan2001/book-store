@@ -19,20 +19,39 @@ import {
   FieldError,
 } from "@/components/ui/field";
 
-import { useSearchParams } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 
 import BuyNowCheckOut from "../components/buynow-checkout";
 import CartCheckOut from "../components/cart-checkout";
 import { OrderInformation, type OrderInformationType } from "../schema";
 import { Button } from "@/components/ui/button";
 import useCartStore from "@/features/cart/store";
+import { useMutation } from "@tanstack/react-query";
+import { createOrder } from "../api";
+
+type OrderPayLoad = OrderInformationType & {
+  orderItems: {
+    productId: string;
+    quantity: number;
+  }[];
+};
 
 export default function CheckoutPage() {
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const clearCart = useCartStore((state) => state.clearCart);
+
+  //to check if user come to checkout page by clicking Buy Now btn from product detail or product card
+  // if buyNowProductId does not exist ,it describe user come from cart sidebar's BuyNow btn
   const buyNowProductId = searchParams.get("buynow");
+  const buyNowQuantity = searchParams.get("quantity");
+
+  const validQuantity =
+    buyNowQuantity && parseInt(buyNowQuantity) > 0
+      ? parseInt(buyNowQuantity)
+      : 1;
 
   const cartItems = useCartStore((state) => state.cartItems);
-  const cartItemIds = cartItems.map((p) => p.id);
 
   const {
     handleSubmit,
@@ -48,15 +67,33 @@ export default function CheckoutPage() {
       address: "",
       city: "",
       township: "",
-      notes: "",
+      note: "",
       payment: "cod",
-      productIds: [],
+    },
+  });
+
+  const { mutate, isPending } = useMutation<any, Error, OrderPayLoad>({
+    mutationFn: (data) => createOrder(data),
+    onSuccess: () => {
+      if (!buyNowProductId) {
+        clearCart();
+      }
+
+      alert("success");
+      navigate("/");
     },
   });
 
   function onSubmit(data: OrderInformationType) {
-    const productIds = buyNowProductId ? [buyNowProductId] : cartItemIds;
-    console.log({ ...data, productIds });
+    const preparedCartItems = cartItems.map((item) => ({
+      productId: item.id,
+      quantity: item.quantity,
+    }));
+    const orderItems = buyNowProductId
+      ? [{ productId: buyNowProductId, quantity: validQuantity }]
+      : preparedCartItems;
+
+    mutate({ ...data, orderItems });
   }
 
   return (
@@ -143,8 +180,8 @@ export default function CheckoutPage() {
 
               <Field>
                 <FieldLabel>Delivery Note (optional)</FieldLabel>
-                <Input type="text" placeholder="" {...register("notes")} />
-                <FieldError>{errors?.notes?.message}</FieldError>
+                <Input type="text" placeholder="" {...register("note")} />
+                <FieldError>{errors?.note?.message}</FieldError>
               </Field>
             </CardContent>
           </Card>
@@ -197,11 +234,20 @@ export default function CheckoutPage() {
           </Card>
 
           {buyNowProductId ? (
-            <BuyNowCheckOut productId={buyNowProductId} register={register} />
+            <BuyNowCheckOut
+              productId={buyNowProductId}
+              register={register}
+              quantity={validQuantity}
+            />
           ) : (
-            <CartCheckOut register={register} />
+            <CartCheckOut />
           )}
-          <Button variant="default" className="w-full" type="submit">
+          <Button
+            variant="default"
+            className="w-full"
+            type="submit"
+            disabled={isPending}
+          >
             Submit
           </Button>
         </div>

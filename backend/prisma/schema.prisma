@@ -37,6 +37,7 @@ model User {
   errorLoginCount Int        @default(0) @db.SmallInt
   likedProducts   Product[]
   articles        Article[]
+  orders          Order[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -88,6 +89,7 @@ model Product {
   productImages ProductImage[]
   productTag    ProductTag[]
   likedBy       User[]
+  orderItems    OrderItem[]
   deletedAt     DateTime?
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
@@ -153,4 +155,43 @@ model ToDeleteImage {
   deletedAt DateTime @default(now())
 
   @@index([imageId])
+}
+
+enum OrderStatus {
+  PENDING
+  SHIPPING
+  DELIVERED
+}
+
+model Order {
+  id         String      @id @default(cuid(2))
+  userId     String      @db.VarChar(255)
+  email      String      @db.VarChar(100)
+  fullName   String      @db.VarChar(100)
+  phone      String      @db.VarChar(30)
+  address    String      @db.VarChar(255)
+  city       String      @db.VarChar(50)
+  township   String      @db.VarChar(50)
+  note       String?     @db.Text()
+  payment    String      @db.Char(10)
+  totalPrice Int
+  status     OrderStatus
+  orderItems OrderItem[]
+  user       User        @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model OrderItem {
+  id         String  @id @default(cuid(2))
+  quantity   Int     @db.SmallInt
+  price      Int
+  totalPrice Int
+  orderId    String
+  order      Order   @relation(fields: [orderId], references: [id])
+  productId  String
+  product    Product @relation(fields: [productId], references: [id])
+
+  createdAt DateTime @default(now())
 }

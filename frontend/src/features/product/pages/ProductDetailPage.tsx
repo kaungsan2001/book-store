@@ -205,7 +205,7 @@ export default function ProductDetailPage() {
                 <AddToCartButton product={product} quantity={quantity} />
               )}
 
-              <BuyNowButton product={product} />
+              <BuyNowButton product={product} quantity={quantity} />
             </div>
           </div>
         </div>

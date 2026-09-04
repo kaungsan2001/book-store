@@ -13,7 +13,13 @@ import { Paths } from "@/config/constants";
 import { useNavigate } from "react-router";
 import useProductStore from "../store";
 
-export function BuyNowButton({ product }: { product: Product }) {
+export function BuyNowButton({
+  product,
+  quantity = 1,
+}: {
+  product: Product;
+  quantity?: number;
+}) {
   const navigate = useNavigate();
   const setBuyNowProduct = useProductStore((state) => state.setBuyNowProduct);
   return (
@@ -22,7 +28,7 @@ export function BuyNowButton({ product }: { product: Product }) {
       className="mt-2 w-full sm:w-auto"
       onClick={() => {
         setBuyNowProduct(product);
-        navigate(`${Paths.checkOut}?buynow=${product.id}`);
+        navigate(`${Paths.checkOut}?buynow=${product.id}&quantity=${quantity}`);
       }}
     >
       <CreditCard className="mr-2 h-4 w-4" />

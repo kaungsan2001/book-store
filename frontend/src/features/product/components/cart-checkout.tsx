@@ -1,7 +1,7 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import useCartStore from "@/features/cart/store";
 
-export default function CartCheckOut({ register }: { register: any }) {
+export default function CartCheckOut() {
   const cartItems = useCartStore((state) => state.cartItems);
   const totalPrice = useCartStore((state) => state.getTotalPrice());
 
@@ -26,9 +26,9 @@ export default function CartCheckOut({ register }: { register: any }) {
             </div>
           ))}
         </div>
-        <div className="flex justify-between text-sm">
+        <div className="text-sm">
           {cartItems && (
-            <span className="font-medium">Total : {totalPrice}</span>
+            <span className="font-medium float-end">Total : {totalPrice}</span>
           )}
         </div>
       </CardContent>

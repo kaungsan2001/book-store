@@ -68,3 +68,8 @@ export const categoriesQuery = () => ({
 
 export const productLikeToggleFn = async (productId: string) =>
   await api.patch("products/like-toggle", { productId });
+
+export const createOrder = async (data: any) => {
+  const res = await api.post("/orders/create", data);
+  return res.data;
+};
