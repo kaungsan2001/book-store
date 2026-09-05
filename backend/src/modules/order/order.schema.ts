@@ -23,3 +23,23 @@ export const OrderCreateSchema = z.object({
 });
 
 export type OrderCreateValues = z.infer<typeof OrderCreateSchema>["body"];
+
+export const OrderUpdateSchema = z.object({
+  body: z.object({
+    status: z.enum(["PENDING", "DELIVERED", "SHIPPING"]),
+  }),
+  params: z.object({
+    id: z.cuid2(),
+  }),
+});
+
+export type OrderUpdateType = z.infer<typeof OrderUpdateSchema>["body"];
+
+export const GetOrderListSchema = z.object({
+  query: z.object({
+    limit: z.coerce.number().int().positive().max(10).catch(10),
+    cursor: z.cuid2().optional(),
+  }),
+});
+
+export type GetOrderListType = z.infer<typeof GetOrderListSchema>["query"];

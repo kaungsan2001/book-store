@@ -166,6 +166,7 @@ enum OrderStatus {
 model Order {
   id         String      @id @default(cuid(2))
   userId     String      @db.VarChar(255)
+  orderCode  String      @db.VarChar(30)
   email      String      @db.VarChar(100)
   fullName   String      @db.VarChar(100)
   phone      String      @db.VarChar(30)

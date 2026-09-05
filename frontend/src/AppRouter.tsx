@@ -34,6 +34,10 @@ import {
   productListLoader,
   productDetailLoader,
 } from "./features/product/loader";
+import UserOrderPage from "./features/user/pages/UserOrderPage";
+import UserFavoritesPage from "./features/user/pages/UserFavoritesPage";
+import { userOrderListLoader } from "./features/user/loaders";
+import UserOrderDetailPage from "./features/user/pages/UserOrderDetailPage";
 
 let router = createBrowserRouter([
   {
@@ -68,6 +72,18 @@ let router = createBrowserRouter([
             loader: articlesInfiniteLoader,
           },
           { path: ":id", Component: ArticleDetailPage },
+        ],
+      },
+      {
+        path: "user",
+        children: [
+          {
+            path: "orders",
+            Component: UserOrderPage,
+            loader: userOrderListLoader,
+          },
+          { path: "orders/:id", Component: UserOrderDetailPage },
+          { path: "favorites", Component: UserFavoritesPage },
         ],
       },
     ],

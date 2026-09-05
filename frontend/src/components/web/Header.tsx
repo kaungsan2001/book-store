@@ -3,12 +3,13 @@ import { BookOpenText, User, Menu, X, Search, LogOut } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "../mode-toggle";
-import { Form } from "react-router";
+import { Form, useNavigate } from "react-router";
 import { Paths } from "@/config/constants";
 import { ProgressBar } from "@/components/web/progress-bar";
 import { CartSidebar } from "@/features/cart/components/cart-sidebar";
 
 export default function Header() {
+  const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
@@ -107,10 +108,16 @@ export default function Header() {
                       </Badge>
                     </div>
                     <div className="space-y-1.5">
-                      <button className="w-full text-left font-sans text-xs px-2.5 py-1.5 rounded-md hover:bg-muted font-medium transition-colors">
+                      <button
+                        className="w-full text-left font-sans text-xs px-2.5 py-1.5 rounded-md hover:bg-muted font-medium transition-colors"
+                        onClick={() => navigate(Paths.myOrders)}
+                      >
                         My Orders
                       </button>
-                      <button className="w-full text-left font-sans text-xs px-2.5 py-1.5 rounded-md hover:bg-muted font-medium transition-colors">
+                      <button
+                        onClick={() => navigate(Paths.myFavorites)}
+                        className="w-full text-left font-sans text-xs px-2.5 py-1.5 rounded-md hover:bg-muted font-medium transition-colors"
+                      >
                         Wishlist & Favorites
                       </button>
                       <button className="w-full text-left font-sans text-xs px-2.5 py-1.5 rounded-md hover:bg-muted font-medium transition-colors">

@@ -5,4 +5,8 @@ export const Paths = {
   otp: "/auth/otp",
 
   checkOut: "/products/checkout",
+
+  myOrders: "/user/orders",
+
+  myFavorites: "/user/favorites",
 };

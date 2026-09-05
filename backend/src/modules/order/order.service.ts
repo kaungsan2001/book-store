@@ -1,5 +1,4 @@
 import { prisma } from "../../database/db";
-import type { OrderCreateValues } from "./order.schema";
 
 type OrderCreate = {
   userId: string;
@@ -12,6 +11,7 @@ type OrderCreate = {
   note: string | undefined;
   payment: string;
   orderTotalPrice: number;
+  orderCode: string;
   productsWithEachTotalPrice: {
     productId: string;
     quantity: number;
@@ -32,11 +32,13 @@ export const orderCreateService = async ({
   payment,
   orderTotalPrice,
   productsWithEachTotalPrice,
+  orderCode,
 }: OrderCreate) => {
   return await prisma.order.create({
     data: {
       userId,
       email,
+      orderCode,
       fullName,
       phone,
       address,
@@ -65,4 +67,59 @@ export const getOrderDetailService = async (id: string) => {
       orderItems: true,
     },
   });
+};
+
+export const updateOrderService = async (
+  id: string,
+  status: "PENDING" | "DELIVERED" | "SHIPPING",
+) => {
+  return await prisma.order.update({
+    where: { id },
+    data: {
+      status,
+    },
+  });
+};
+
+export const orderListService = async ({
+  limit,
+  cursor,
+  userId,
+}: {
+  limit: number;
+  cursor: string | undefined;
+  userId: string;
+}) => {
+  const [totalCount, orders] = await Promise.all([
+    prisma.order.count({ where: { userId } }),
+    prisma.order.findMany({
+      where: {
+        userId,
+      },
+      take: limit + 1,
+      skip: cursor ? 1 : undefined,
+      cursor: cursor
+        ? {
+            id: cursor,
+          }
+        : undefined,
+      orderBy: {
+        createdAt: "desc",
+      },
+      include: {
+        orderItems: {
+          include: {
+            product: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+      },
+    }),
+  ]);
+  console.log(orders);
+  return { totalCount, orders };
 };
