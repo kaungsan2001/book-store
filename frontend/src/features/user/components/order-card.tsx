@@ -14,7 +14,7 @@ export default function OrderCard({ order }: { order: Order }) {
   return (
     <Card
       className="rounded-none cursor-pointer hover:bg-secondary"
-      onClick={() => navigate(`${Paths.myOrders}/${order.id}}`)}
+      onClick={() => navigate(`${Paths.myOrders}/${order.id}`)}
     >
       <CardHeader>
         <div className="flex justify-between">

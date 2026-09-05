@@ -135,7 +135,7 @@ export const getOrderList = async (
     hasNextPage,
     nextCursor,
   };
-
+  console.log(orders);
   sendResponse({ res, data: orders, meta, message: "Order List" });
 };
 
@@ -145,8 +145,10 @@ export const getOrderDetail = async (
 ) => {
   const id = req.params.id as string;
   const { id: userId, role } = req.user!;
+  console.log(id);
 
   const order = await getOrderDetailService(id);
+  console.log("order", order);
 
   if (!order) throw createHttpError(404, "Not Found.");
 

@@ -1,5 +1,5 @@
 import { api } from "@/api/axios";
-import type { OrderListResponse } from "../schema";
+import type { OrderListResponse, OrderDetailResponse } from "../schema";
 
 const fetchUserOrders = async ({
   pageParam = null,
@@ -15,4 +15,16 @@ export const userOrdersInfiniteQuery = () => ({
   queryFn: fetchUserOrders,
   initialPageParam: null,
   getNextPageParam: (lastPage: any) => lastPage.meta.nextCursor,
+});
+
+const fetchUserOrderDetail = async (
+  id: string,
+): Promise<OrderDetailResponse> => {
+  const res = await api.get(`/orders/${id}`);
+  return res.data;
+};
+
+export const userOrderDetailQuery = (id: string) => ({
+  queryKey: ["user", "orders", id],
+  queryFn: () => fetchUserOrderDetail(id),
 });

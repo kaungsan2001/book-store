@@ -64,7 +64,19 @@ export const getOrderDetailService = async (id: string) => {
   return await prisma.order.findUnique({
     where: { id },
     include: {
-      orderItems: true,
+      orderItems: {
+        include: {
+          product: {
+            include: {
+              productImages: {
+                select: {
+                  imageUrl: true,
+                },
+              },
+            },
+          },
+        },
+      },
     },
   });
 };
