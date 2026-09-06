@@ -18,6 +18,11 @@ import {
 import { sendResponse } from "../../utils/response";
 
 import { customAlphabet } from "nanoid";
+// Letters and numbers, excluding confusing ones (0, O, 1, I, L)
+const alphabet = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
+
+// Generates a 9-character random string (e.g., "K7X9W2PL3")
+const generateNanoCode = customAlphabet(alphabet, 9);
 
 export const createNewOrder = async (
   req: AuthenticatedRequest & ValidatedRequest<typeof OrderCreateSchema>,
@@ -42,58 +47,99 @@ export const createNewOrder = async (
   if (productIds.length !== orderItems.length)
     throw createHttpError(400, "Duplicated Products");
 
-  // getting price from db
-  const products = await prisma.product.findMany({
-    where: {
-      id: {
-        in: productIds,
+  // used db transaction to prevent Race-Condition Bug
+  // create new order and update product's inventory
+  const newOrder = await prisma.$transaction(async (tx) => {
+    // query products to get each product's price
+    const products = await tx.product.findMany({
+      where: {
+        id: {
+          in: productIds,
+        },
       },
-    },
-    select: {
-      id: true,
-      price: true,
-    },
-  });
+      select: {
+        id: true,
+        price: true,
+        inventory: true,
+      },
+    });
 
-  if (productIds.length !== products.length)
-    throw createHttpError(
-      400,
-      "One or more products are invalid or no longer exist",
+    if (productIds.length !== products.length)
+      throw createHttpError(
+        400,
+        "One or more products are invalid or no longer exist",
+      );
+
+    const productsWithEachTotalPrice = orderItems.map((item) => {
+      const product = products.find((p) => p.id === item.productId);
+      const totalPrice = product!.price * item.quantity;
+      return { ...item, totalPrice, price: product!.price };
+    });
+
+    const orderTotalPrice = productsWithEachTotalPrice.reduce(
+      (total, current) => total + current.totalPrice,
+      0,
     );
 
-  const productsWithEachTotalPrice = orderItems.map((item) => {
-    const product = products.find((p) => p.id === item.productId);
-    const totalPrice = product!.price * item.quantity;
-    return { ...item, totalPrice, price: product!.price };
+    // const data = await orderCreateService({
+    //   userId: userId.trim(),
+    //   email: email.trim(),
+    //   orderCode: "ORD-" + generateNanoCode(),
+    //   fullName: fullName.trim(),
+    //   phone: phone.trim(),
+    //   address: address.trim(),
+    //   city: city.trim(),
+    //   township: township.trim(),
+    //   note: note?.trim(),
+    //   payment: payment.trim(),
+    //   orderTotalPrice,
+    //   productsWithEachTotalPrice,
+    // });
+    const newOrder = await tx.order.create({
+      data: {
+        userId: userId.trim(),
+        email: email.trim(),
+        orderCode: "ORD-" + generateNanoCode(),
+        fullName: fullName.trim(),
+        phone: phone.trim(),
+        address: address.trim(),
+        city: city.trim(),
+        township: township.trim(),
+        note: note?.trim(),
+        payment: payment.trim(),
+
+        totalPrice: orderTotalPrice,
+        status: "PENDING",
+        orderItems: {
+          createMany: {
+            data: productsWithEachTotalPrice,
+          },
+        },
+      },
+      include: {
+        orderItems: true,
+      },
+    });
+
+    for (const item of orderItems) {
+      const updatedProduct = await tx.product.update({
+        where: { id: item.productId, inventory: { gte: item.quantity } },
+
+        data: {
+          inventory: {
+            decrement: item.quantity,
+          },
+        },
+      });
+      if (!updatedProduct) {
+        throw createHttpError(400);
+      }
+    }
+
+    return newOrder;
   });
 
-  const orderTotalPrice = productsWithEachTotalPrice.reduce(
-    (total, current) => total + current.totalPrice,
-    0,
-  );
-
-  // Letters and numbers, excluding confusing ones (0, O, 1, I, L)
-  const alphabet = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
-
-  // Generates a 9-character random string (e.g., "K7X9W2PL3")
-  const generateNanoCode = customAlphabet(alphabet, 9);
-
-  const data = await orderCreateService({
-    userId: userId.trim(),
-    email: email.trim(),
-    orderCode: "ORD-" + generateNanoCode(),
-    fullName: fullName.trim(),
-    phone: phone.trim(),
-    address: address.trim(),
-    city: city.trim(),
-    township: township.trim(),
-    note: note?.trim(),
-    payment: payment.trim(),
-    orderTotalPrice,
-    productsWithEachTotalPrice,
-  });
-
-  sendResponse({ res, data, message: "success" });
+  sendResponse({ res, data: newOrder, message: "success" });
 };
 
 export const updateOrder = async (
