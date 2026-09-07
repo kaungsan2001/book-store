@@ -38,6 +38,11 @@ import UserOrderPage from "./features/user/pages/UserOrderPage";
 import UserFavoritesPage from "./features/user/pages/UserFavoritesPage";
 import { userOrderListLoader } from "./features/user/loaders";
 import UserOrderDetailPage from "./features/user/pages/UserOrderDetailPage";
+import AdminLayout from "./layouts/AdminLayout";
+import OverViewPage from "./features/dashboard/pages/OverViewPage";
+import ProductCreatePage from "./features/dashboard/pages/ProductCreatePage";
+import AdminOrderListPage from "./features/dashboard/pages/AdminOrderList";
+import UserListPage from "./features/dashboard/pages/UserListPage";
 
 let router = createBrowserRouter([
   {
@@ -86,6 +91,16 @@ let router = createBrowserRouter([
           { path: "favorites", Component: UserFavoritesPage },
         ],
       },
+    ],
+  },
+  {
+    path: "/admin",
+    Component: AdminLayout,
+    children: [
+      { index: true, Component: OverViewPage },
+      { path: "products", Component: ProductCreatePage },
+      { path: "orders", Component: AdminOrderListPage },
+      { path: "users", Component: UserListPage },
     ],
   },
   {
