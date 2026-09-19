@@ -3,11 +3,11 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useParams } from "react-router";
 import { articleDetailQuery } from "../api";
+import { useLoaderData } from "react-router";
 
 export default function ArticleDetailPage() {
-  const id = useParams().id as string;
+  const { id } = useLoaderData() as { id: string };
   const { data: article } = useSuspenseQuery(articleDetailQuery(id));
   const publishDate = new Date(article.data.createdAt).toLocaleDateString(
     "en-US",

@@ -115,6 +115,16 @@ let router = createBrowserRouter([
     ],
   },
   {
+    path: "/admin",
+    Component: AdminLayout,
+    children: [
+      { index: true, Component: OverViewPage },
+      { path: "products", Component: ProductCreatePage },
+      { path: "orders", Component: AdminOrderListPage },
+      { path: "users", Component: UserListPage },
+    ],
+  },
+  {
     path: "/auth",
     Component: GuestLayout,
     loader: authCheckLoader,
