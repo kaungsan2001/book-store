@@ -110,10 +110,17 @@ export default function Header() {
                     <div className="space-y-1.5">
                       <button
                         className="w-full text-left font-sans text-xs px-2.5 py-1.5 rounded-md hover:bg-muted font-medium transition-colors"
+                        onClick={() => navigate("/admin")}
+                      >
+                        Dashboard
+                      </button>
+                      <button
+                        className="w-full text-left font-sans text-xs px-2.5 py-1.5 rounded-md hover:bg-muted font-medium transition-colors"
                         onClick={() => navigate(Paths.myOrders)}
                       >
                         My Orders
                       </button>
+
                       <button
                         onClick={() => navigate(Paths.myFavorites)}
                         className="w-full text-left font-sans text-xs px-2.5 py-1.5 rounded-md hover:bg-muted font-medium transition-colors"

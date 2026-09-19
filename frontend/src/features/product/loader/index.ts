@@ -3,7 +3,6 @@ import {
   categoriesQuery,
   productDetailQuery,
   infiniteProductListQuery,
-  fetchProductDetail,
 } from "../api";
 import type { LoaderFunctionArgs } from "react-router";
 

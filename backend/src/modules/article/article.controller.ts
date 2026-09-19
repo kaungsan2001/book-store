@@ -20,7 +20,7 @@ import {
   UpdateArticleSchema,
 } from "./article.schema";
 import type { ValidatedRequest } from "../../middlewares/validate.middleware";
-import { getCache, setCache } from "../../utils/cache";
+// import { getCache, setCache } from "../../utils/cache";
 import createHttpError from "http-errors";
 import { uploadToCloudinary } from "../../utils/upload";
 import { getCategoryById } from "../category/category.service";
@@ -63,11 +63,11 @@ export const createArticle = async (
     },
     userId,
   );
-  await setCache({
-    key: `${CACHE_KEYS.ARTICLES}${article.id}`,
-    exp: 3600,
-    data: article,
-  });
+  // await setCache({
+  //   key: `${CACHE_KEYS.ARTICLES}${article.id}`,
+  //   exp: 3600,
+  //   data: article,
+  // });
   sendResponse({
     res,
     data: { article },
@@ -84,7 +84,7 @@ export const getArticle = async (
   res: Response,
 ) => {
   const articleId = req.validated!.params.id;
-  const cache = await getCache(`${CACHE_KEYS.ARTICLES}${articleId}`);
+  // const cache = await getCache(`${CACHE_KEYS.ARTICLES}${articleId}`);
 
   // if (cache) {
   //   return sendResponse({ res, data: { article: cache }, message: "Article" });
@@ -137,11 +137,11 @@ export const getAllArticle = async (
     nextCursor,
   };
 
-  await setCache({
-    key: `${CACHE_KEYS.ARTICLES}${limit}${cursor}`,
-    exp: 3600,
-    data: { articles, meta },
-  });
+  // await setCache({
+  //   key: `${CACHE_KEYS.ARTICLES}${limit}${cursor}`,
+  //   exp: 3600,
+  //   data: { articles, meta },
+  // });
 
   sendResponse({
     res,

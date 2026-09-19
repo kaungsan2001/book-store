@@ -41,8 +41,13 @@ import UserOrderDetailPage from "./features/user/pages/UserOrderDetailPage";
 import AdminLayout from "./layouts/AdminLayout";
 import OverViewPage from "./features/dashboard/pages/OverViewPage";
 import ProductCreatePage from "./features/dashboard/pages/ProductCreatePage";
-import AdminOrderListPage from "./features/dashboard/pages/AdminOrderList";
+import AdminOrderListPage from "./features/dashboard/pages/AdminOrderListPage";
 import UserListPage from "./features/dashboard/pages/UserListPage";
+import {
+  adminOrderListLoader,
+  dashboardOverviewLoader,
+} from "./features/dashboard/loaders";
+import AdminProductListPage from "./features/dashboard/pages/AdminProductListPage";
 
 let router = createBrowserRouter([
   {
@@ -97,9 +102,15 @@ let router = createBrowserRouter([
     path: "/admin",
     Component: AdminLayout,
     children: [
-      { index: true, Component: OverViewPage },
-      { path: "products", Component: ProductCreatePage },
-      { path: "orders", Component: AdminOrderListPage },
+      { index: true, Component: OverViewPage, loader: dashboardOverviewLoader },
+      { path: "products", Component: AdminProductListPage },
+      { path: "products/create", Component: ProductCreatePage },
+
+      {
+        path: "orders",
+        Component: AdminOrderListPage,
+        loader: adminOrderListLoader,
+      },
       { path: "users", Component: UserListPage },
     ],
   },

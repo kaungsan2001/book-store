@@ -86,7 +86,7 @@ function errorHandler(
     error: {
       code: err.code || ERRORS.INTERNAL_SERVER_ERROR,
       details: err.details || null,
-      ...(process.env.NODE_ENV === "production" && { stack: err.stack }),
+      ...(process.env.NODE_ENV !== "production" && { stack: err.stack }),
     },
   });
 }

@@ -5,62 +5,41 @@ import {
   ShoppingCart,
   Users,
   AlertTriangle,
-  TrendingUp,
   PackageCheck,
 } from "lucide-react";
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
-export interface AdminOverviewStats {
-  productCount: number;
-  orderCount: number;
-  userCount: number;
-  revenue: number;
-  lowStockCount: number;
-  pendingOrderCount: number;
-}
+import { dashboardOverviewQuery } from "../api";
 
-interface AdminOverviewProps {
-  stats?: AdminOverviewStats;
-}
+export default function OverViewPage() {
+  const {
+    data: { data },
+  } = useSuspenseQuery(dashboardOverviewQuery());
 
-const defaultStats: AdminOverviewStats = {
-  productCount: 0,
-  orderCount: 0,
-  userCount: 0,
-  revenue: 0,
-  lowStockCount: 0,
-  pendingOrderCount: 0,
-};
-
-export default function OverViewPage({
-  stats = defaultStats,
-}: AdminOverviewProps) {
   const overviewCards = [
     {
       title: "Total Products",
-      value: stats.productCount,
+      value: data.products.total,
       description: "Books in your store",
       icon: BookOpen,
     },
     {
       title: "Total Orders",
-      value: stats.orderCount,
+      value: data.orders.total,
       description: "All customer orders",
       icon: ShoppingCart,
     },
     {
       title: "Total Users",
-      value: stats.userCount,
+      value: data.users.total,
       description: "Registered customers",
       icon: Users,
     },
     {
       title: "Revenue",
-      value: `${stats.revenue.toLocaleString()} MMK`,
+      value: `${data.financials.revenue} MMK`,
       description: "Total store revenue",
       icon: DollarSign,
     },
@@ -140,29 +119,7 @@ export default function OverViewPage({
                 </div>
               </div>
 
-              <Badge variant="secondary">{stats.pendingOrderCount}</Badge>
-            </div>
-
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span>Orders processed</span>
-                <span>
-                  {stats.orderCount > 0
-                    ? Math.max(0, stats.orderCount - stats.pendingOrderCount)
-                    : 0}
-                  /{stats.orderCount}
-                </span>
-              </div>
-
-              <Progress
-                value={
-                  stats.orderCount > 0
-                    ? ((stats.orderCount - stats.pendingOrderCount) /
-                        stats.orderCount) *
-                      100
-                    : 0
-                }
-              />
+              <Badge variant="secondary">{data.orders.pendingCount}</Badge>
             </div>
           </CardContent>
         </Card>
@@ -199,13 +156,7 @@ export default function OverViewPage({
                 </div>
               </div>
 
-              <Badge variant="destructive">{stats.lowStockCount}</Badge>
-            </div>
-
-            <div className="mt-6 flex items-center gap-2 text-sm text-muted-foreground">
-              <TrendingUp className="size-4" />
-
-              <span>Inventory data will be loaded from your API.</span>
+              <Badge variant="destructive">{data.products.lowStockCount}</Badge>
             </div>
           </CardContent>
         </Card>

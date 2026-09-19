@@ -17,7 +17,7 @@ import {
   updateCategorySchema,
 } from "./category.schema";
 import type { ValidatedRequest } from "../../middlewares/validate.middleware";
-import { getCache, setCache } from "../../utils/cache";
+// import { getCache, setCache } from "../../utils/cache";
 
 /*************************
  * CREATE CATEGORY CONTROLLER *
@@ -33,11 +33,11 @@ export const createCategory = async (
     description,
   });
 
-  await setCache({
-    key: `${CACHE_KEYS.CATEGORIES}${category.id}`,
-    exp: 3600,
-    data: category,
-  });
+  // await setCache({
+  //   key: `${CACHE_KEYS.CATEGORIES}${category.id}`,
+  //   exp: 3600,
+  //   data: category,
+  // });
 
   sendResponse({
     res,
@@ -52,23 +52,23 @@ export const createCategory = async (
  *************************/
 export const getCategory = async (req: Request, res: Response) => {
   const categoryId = req.params.id as string;
-  const cache = await getCache(`${CACHE_KEYS.CATEGORIES}${categoryId}`);
+  // const cache = await getCache(`${CACHE_KEYS.CATEGORIES}${categoryId}`);
 
-  if (cache) {
-    return sendResponse({
-      res,
-      data: { category: cache },
-      message: "Category",
-    });
-  }
+  // if (cache) {
+  //   return sendResponse({
+  //     res,
+  //     data: { category: cache },
+  //     message: "Category",
+  //   });
+  // }
 
   const category = await getCategoryById(categoryId);
 
-  await setCache({
-    key: `${CACHE_KEYS.CATEGORIES}${categoryId}`,
-    exp: 3600,
-    data: category,
-  });
+  // await setCache({
+  //   key: `${CACHE_KEYS.CATEGORIES}${categoryId}`,
+  //   exp: 3600,
+  //   data: category,
+  // });
 
   sendResponse({ res, data: { category }, message: "Category" });
 };

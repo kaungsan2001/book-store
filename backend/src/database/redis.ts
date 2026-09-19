@@ -1,5 +1,5 @@
-import redis from "ioredis";
+// import redis from "ioredis";
 
-const redisClient = new redis(process.env.REDIS_URL!);
+// const redisClient = new redis(process.env.REDIS_URL!);
 
-export default redisClient;
+// export default redisClient;

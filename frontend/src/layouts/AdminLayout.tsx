@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Outlet, useNavigate } from "react-router";
 import {
   BookOpen,
   Boxes,
@@ -13,8 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-
-import { Outlet, useNavigate } from "react-router";
+import { ModeToggle } from "@/components/mode-toggle";
 
 type DashboardPage =
   | "overview"
@@ -115,6 +115,7 @@ export default function AdminLayout() {
 
           {/* Right side */}
           <div className="ml-auto flex items-center gap-3">
+            <ModeToggle />
             <div className="hidden text-right sm:block">
               <p className="text-sm font-medium">Admin</p>
 
