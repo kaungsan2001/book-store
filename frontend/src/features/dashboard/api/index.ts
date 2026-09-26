@@ -18,12 +18,18 @@ export const dashboardOverviewQuery = () => ({
 const fetchAdminOrderList = async ({
   search = null,
   status = null,
+  sort = null,
+  page,
 }: {
   search?: string | null;
   status?: string | null;
+  sort?: string | null;
+  page: number;
 }): Promise<AdminOrderListResponse> => {
-  let query = search ? `searchKey=${search}` : "limit=10";
+  let query = search ? `search=${search}` : `limit=10`;
+  query += page ? `&page=${page}` : "";
   query += status ? `&status=${status}` : "";
+  query += sort ? `&sort=${sort}` : "";
   const res = await api.get(`/admin/orders?${query}`);
   return res.data;
 };
@@ -31,10 +37,14 @@ const fetchAdminOrderList = async ({
 export const adminOrderListQuery = ({
   search = null,
   status = null,
+  sort = null,
+  page,
 }: {
   search?: string | null;
   status?: string | null;
+  sort?: string | null;
+  page: number;
 }) => ({
-  queryKey: ["admin", "orders", search, status],
-  queryFn: () => fetchAdminOrderList({ search, status }),
+  queryKey: ["admin", "orders", { search, status, sort, page }],
+  queryFn: () => fetchAdminOrderList({ search, status, sort, page }),
 });

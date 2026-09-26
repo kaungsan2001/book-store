@@ -57,7 +57,6 @@ export const getProductList = async ({
   cursor?: string;
   categories?: string[] | undefined;
 }) => {
-  console.log("categories in service", categories);
   const [totalCount, products] = await Promise.all([
     prisma.product.count(),
     prisma.product.findMany({

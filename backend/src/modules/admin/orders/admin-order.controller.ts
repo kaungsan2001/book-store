@@ -9,24 +9,33 @@ export const adminOrderList = async (
   req: AuthenticatedRequest & ValidatedRequest<typeof AdminOrderListSchema>,
   res: Response,
 ) => {
-  const { page, limit, searchKey, status } = req.validated!.query;
-  const statusArray = ["PENDING", "CONFIRMED", "DELIVERED", "CANCELLED"];
-  const isValidStatus = statusArray.includes(status ?? "");
+  const { page, limit, search, status, sort } = req.validated!.query;
+  console.log(search);
 
   const skip = (page - 1) * limit;
+
   const { totalCount, orders } = await adminOrderListService({
     skip,
     limit,
-    searchKey,
-    status: isValidStatus ? status : undefined,
+    search,
+    status,
+    sort,
   });
+
+  let hasNextPage = false;
+
+  if (orders.length > limit) {
+    hasNextPage = true;
+    orders.pop();
+  }
 
   const totalPages = Math.ceil(totalCount / limit);
   const meta = {
     totalPages,
     totalCount,
-    currentPage: page,
     limit,
+    hasNextPage,
+    currentPage: page,
   };
 
   sendResponse({ res, data: orders, message: "Order List", meta });

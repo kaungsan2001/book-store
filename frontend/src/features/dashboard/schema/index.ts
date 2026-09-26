@@ -59,7 +59,8 @@ export type AdminOrderListResponse = {
   meta: {
     totalPages: number;
     totalCount: number;
-    currentPage: number;
+    hasNextPage: boolean;
+    nextCursor: string | null;
     limit: number;
   };
 };
